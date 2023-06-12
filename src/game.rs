@@ -1,5 +1,10 @@
 use bevy::prelude::*;
 
+#[cfg(debug_assertions)]
+use bevy::input::common_conditions::input_toggle_active;
+#[cfg(debug_assertions)]
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
@@ -10,8 +15,14 @@ impl Plugin for GamePlugin {
                 ..Default::default()
             }),
             ..Default::default()
-        }))
-        .add_system(setup.on_startup());
+        }));
+
+        #[cfg(debug_assertions)]
+        app.add_plugin(
+            WorldInspectorPlugin::default().run_if(input_toggle_active(true, KeyCode::Slash)),
+        );
+
+        app.add_system(setup.on_startup());
     }
 }
 
